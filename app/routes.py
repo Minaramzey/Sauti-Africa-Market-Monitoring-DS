@@ -177,7 +177,7 @@ def get_table_dqrt():
                         result.append(dict(row))
         return jsonify(result)
 
-@app.route("/wholesale/pricestatus/")
+@app.route("/wholesale/price-status/")
 def get_table_psws():
 
     labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
@@ -800,7 +800,7 @@ def query_wholesale_data():
             result.append(dict(row))
 
         return json.dumps(result, indent=4)
-        
+
     else:
         
         return page_not_found(404)
