@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 import pandas as pd
 import psycopg2
@@ -56,7 +57,7 @@ def page_not_found(e):
 
 ###############################################################
 
-@app.route("/data-quality-ws/")
+@app.route("/wholesale/data-quality/")
 def get_table_dqws():
         labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
             password=os.environ.get('aws_db_password'),
@@ -116,7 +117,7 @@ def get_table_dqws():
                         result.append(dict(row))
         return jsonify(result)
 
-@app.route("/data-quality-rt/")
+@app.route("/retail/data-quality/")
 def get_table_dqrt():
         labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
             password=os.environ.get('aws_db_password'),
@@ -176,7 +177,7 @@ def get_table_dqrt():
                         result.append(dict(row))
         return jsonify(result)
 
-@app.route("/price-status-ws/")
+@app.route("/wholesale/pricestatus/")
 def get_table_psws():
 
     labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
@@ -215,9 +216,10 @@ def get_table_psws():
     result = []
     for _, row in df.iterrows():
             result.append(dict(row))
-    return jsonify(result)
+    
+    return json.dumps(result, indent=4)
 
-@app.route("/price-status-rt/")
+@app.route("/retail/price-status/")
 def get_table_psrt():
 
     labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
@@ -256,11 +258,11 @@ def get_table_psrt():
     result = []
     for _, row in df.iterrows():
             result.append(dict(row))
-    return jsonify(result)
+    return json.dumps(result, indent=4)
 
 
 
-@app.route("/price-status-ws/labeled/")
+@app.route("/wholesale/labeled/")
 def get_table_psws_labeled():
 
     labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
@@ -302,7 +304,7 @@ def get_table_psws_labeled():
             result.append(dict(row))
     return jsonify(result)
 
-@app.route("/price-status-rt/labeled/")
+@app.route("/retail/labeled/")
 def get_table_psrt_labeled():
 
     labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
@@ -348,7 +350,7 @@ def get_table_psrt_labeled():
     return jsonify(result)
 
 
-@app.route("/price-status-ws/labeled/latest/")
+@app.route("/wholesale/labeled/latest/")
 def get_table_psws_labeled_latest():
 
     labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
@@ -391,7 +393,7 @@ def get_table_psws_labeled_latest():
             result.append(dict(row))
     return jsonify(result)
 
-@app.route("/price-status-rt/labeled/latest/")
+@app.route("/retail/labeled/latest/")
 def get_table_psrt_labeled_latest():
 
     labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
@@ -658,7 +660,7 @@ def query_retail_data():
 
             result.append(dict(row))
 
-        return jsonify(result)
+        return json.dumps(result, indent=4)
 
     
     else:
@@ -797,9 +799,8 @@ def query_wholesale_data():
 
             result.append(dict(row))
 
-        return jsonify(result)
-
-    
+        return json.dumps(result, indent=4)
+        
     else:
         
         return page_not_found(404)
