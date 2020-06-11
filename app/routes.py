@@ -107,6 +107,8 @@ def get_table_dqws():
         'data_length', 'completeness', 'duplicates', 'mode_D', 'data_points',
         'DQI', 'DQI_cat']
         merged = merged[cols]
+        merged['start'] = merged['start'] .apply(lambda x: datetime.date.strftime(x,"%y/%m/%d"))
+        merged['end'] = merged['end'].apply(lambda x: datetime.date.strftime(x,"%y/%m/%d"))
         merged['price_category'] = "wholesale"
 
         result = []
@@ -165,6 +167,8 @@ def get_table_dqrt():
         'data_length', 'completeness', 'duplicates', 'mode_D', 'data_points',
         'DQI', 'DQI_cat']
         merged = merged[cols]
+        merged['start'] = merged['start'] .apply(lambda x: datetime.date.strftime(x,"%y/%m/%d"))
+        merged['end'] = merged['end'].apply(lambda x: datetime.date.strftime(x,"%y/%m/%d"))
         merged['price_category'] = "retail"
 
         result = []
