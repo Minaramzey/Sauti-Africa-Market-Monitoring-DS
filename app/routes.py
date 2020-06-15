@@ -793,12 +793,11 @@ def query_wholesale_data():
 
             stats_dict = {'product_data':'missing'}
 
-        # result = [stats_dict]
-        result = []
+        result = [stats_dict]
 
-        for _, row in df.iterrows():
+        # for _, row in df.iterrows():
 
-            result.append(dict(row))
+        #     result.append(dict(row))
 
         return jsonify(result)
 
