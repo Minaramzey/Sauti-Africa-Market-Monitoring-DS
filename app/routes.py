@@ -626,6 +626,8 @@ def query_retail_data():
         df['date_run_model'] = df['date_run_model'].apply(lambda x: datetime.date.strftime(x,"%y/%m/%d") if x is not None else x)
         df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
         df = df.drop(labels=['id'],axis=1)
+        df = df.iloc[:,:-7]
+
 
         labs_curs.execute(query_1,to_filter)
 
@@ -770,8 +772,6 @@ def query_wholesale_data():
         labs_curs.execute(query_1,to_filter)
 
         stats = labs_curs.fetchall()
-
-        print(df.dtypes)
 
         if stats:
 
