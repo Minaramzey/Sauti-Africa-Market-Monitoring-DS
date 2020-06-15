@@ -387,6 +387,8 @@ def get_table_psws_labeled_latest():
     df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
     df['price_category'] = "wholesale"
 
+    print(df.dtypes)
+
     result = []
     for _, row in df.iterrows():
             result.append(dict(row))
@@ -659,7 +661,7 @@ def query_retail_data():
 
             result.append(dict(row))
 
-        return json.dumps(result, indent=4)
+        return jsonify(result)
 
     
     else:
@@ -763,12 +765,13 @@ def query_wholesale_data():
         # df['date_run_model'] = df['date_run_model'].apply(lambda x: datetime.date.strftime(x,"%y/%m/%d") if isinstance(x, datetime.date) else None)
         df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
         df = df.drop(labels=['id'],axis=1)
+        df = df.iloc[:,:-8]
 
         labs_curs.execute(query_1,to_filter)
 
         stats = labs_curs.fetchall()
 
-
+        print(df.dtypes)
 
         if stats:
 
@@ -798,7 +801,7 @@ def query_wholesale_data():
 
             result.append(dict(row))
 
-        return json.dumps(result, indent=4)
+        return jsonify(result)
 
     else:
         
