@@ -217,7 +217,7 @@ def get_table_psws():
     for _, row in df.iterrows():
             result.append(dict(row))
     
-    return json.dumps(result, indent=4)
+    return jsonify(result)
 
 @app.route("/retail/price-status/")
 def get_table_psrt():
@@ -258,7 +258,7 @@ def get_table_psrt():
     result = []
     for _, row in df.iterrows():
             result.append(dict(row))
-    return json.dumps(result, indent=4)
+    return jsonify(result)
 
 
 
@@ -660,7 +660,7 @@ def query_retail_data():
 
             result.append(dict(row))
 
-        return json.dumps(result, indent=4)
+        return jsonify(result)
 
     
     else:
@@ -799,7 +799,7 @@ def query_wholesale_data():
 
             result.append(dict(row))
 
-        return json.dumps(result, indent=4)
+        return jsonify(result)
 
     else:
         
