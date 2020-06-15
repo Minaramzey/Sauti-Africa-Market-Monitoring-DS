@@ -1,12 +1,11 @@
 import datetime
-import json
 import os
 import pandas as pd
 import psycopg2
 
 from dotenv import load_dotenv, find_dotenv
 from flask import current_app as app
-from flask import jsonify, request
+from flask import json, jsonify, request
 
 load_dotenv()
 
@@ -217,7 +216,7 @@ def get_table_psws():
     for _, row in df.iterrows():
             result.append(dict(row))
     
-    return jsonify(result)
+    return json.dumps(result, indent=4)
 
 @app.route("/retail/price-status/")
 def get_table_psrt():
@@ -258,7 +257,7 @@ def get_table_psrt():
     result = []
     for _, row in df.iterrows():
             result.append(dict(row))
-    return jsonify(result)
+    return json.dumps(result, indent=4)
 
 
 
@@ -660,7 +659,7 @@ def query_retail_data():
 
             result.append(dict(row))
 
-        return jsonify(result)
+        return json.dumps(result, indent=4)
 
     
     else:
@@ -795,11 +794,11 @@ def query_wholesale_data():
 
         result = [stats_dict]
 
-        # for _, row in df.iterrows():
+        for _, row in df.iterrows():
 
-        #     result.append(dict(row))
+            result.append(dict(row))
 
-        return jsonify(result)
+        return json.dumps(result, indent=4)
 
     else:
         
