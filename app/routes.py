@@ -110,6 +110,7 @@ def get_table_dqws():
         merged['start'] = merged['start'] .apply(lambda x: datetime.date.strftime(x,"%y/%m/%d"))
         merged['end'] = merged['end'].apply(lambda x: datetime.date.strftime(x,"%y/%m/%d"))
         merged['price_category'] = "wholesale"
+        merged['DQI'] = merged['DQI'].apply(lambda x: round(x,4) if type(x) == float else None)
 
         result = []
         for _, row in merged.iterrows():
@@ -170,6 +171,7 @@ def get_table_dqrt():
         merged['start'] = merged['start'] .apply(lambda x: datetime.date.strftime(x,"%y/%m/%d"))
         merged['end'] = merged['end'].apply(lambda x: datetime.date.strftime(x,"%y/%m/%d"))
         merged['price_category'] = "retail"
+        merged['DQI'] = merged['DQI'].apply(lambda x: round(x,4) if type(x) == float else None)
 
         result = []
         for _, row in merged.iterrows():
@@ -811,3 +813,116 @@ def query_wholesale_data():
         
         labs_conn.close()
     
+
+@app.route("/availablepairs/")
+def get_available_pairs():
+
+    labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
+                password=os.environ.get('aws_db_password'),
+                host=os.environ.get('aws_db_host'),
+                port=os.environ.get('aws_db_port'),
+                database=os.environ.get('aws_db_name'))
+    
+    labs_curs = labs_conn.cursor()
+
+    all_pairs = {'retail':None, 'wholesale':None}
+
+    labs_curs.execute('''
+            SELECT country_code
+            FROM countries
+            ''')
+
+    countries = labs_curs.fetchall()
+
+    if countries:
+
+        countries = [x[0] for x in countries]
+
+        country_market_product_pairs = {country: None for country in countries}
+
+        for country in countries:
+
+        
+            labs_curs.execute('''
+                    SELECT market_name 
+                    FROM markets
+                    WHERE country_code = %s
+                    ''', (country,))
+
+            markets = labs_curs.fetchall()
+
+            if markets:
+
+                markets = [x[0] for x in markets]
+
+                country_market_product_pairs[country]= {market : None for market in markets}
+
+                retail_pairs = country_market_product_pairs.copy()
+                wholesale_pairs = country_market_product_pairs.copy()
+
+                for market in markets:
+
+                    # retail query
+
+                    labs_curs.execute('''
+                    SELECT DISTINCT(product_name) 
+                    FROM retail_prices
+                    WHERE country_code = %s
+                    AND market_name = %s
+                    ''', (country,market))
+
+                    products = labs_curs.fetchall()
+
+                    if products:
+
+                        products = [x[0] for x in products]
+
+                        retail_pairs[country][market] = products
+                        all_pairs['retail'] = retail_pairs
+                                         
+
+                    # wholesale query
+
+                    labs_curs.execute('''
+                    SELECT DISTINCT(product_name) 
+                    FROM wholesale_prices
+                    WHERE country_code = %s
+                    AND market_name = %s
+                    ''', (country,market))
+
+                    products = labs_curs.fetchall()
+
+                    if products:
+
+                        products = [x[0] for x in products]
+
+                        wholesale_pairs[country][market] = products
+                        all_pairs['wholesale'] = retail_pairs
+
+                    else:
+
+                        del wholesale_pairs[country][market]
+
+    keys_to_drop = []
+
+    for sale_type in ['retail', 'wholesale']:
+
+        for key in all_pairs[sale_type].keys():
+
+            if not all_pairs[sale_type][key]:
+
+                keys_to_drop.append(key)
+        
+        for key in keys_to_drop:
+
+            del all_pairs[sale_type][key]
+        
+        keys_to_drop = []
+
+
+    labs_curs.close()
+    labs_conn.close()
+
+
+    return jsonify(all_pairs)
+
