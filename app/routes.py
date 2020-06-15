@@ -793,7 +793,8 @@ def query_wholesale_data():
 
             stats_dict = {'product_data':'missing'}
 
-        result = [stats_dict]
+        # result = [stats_dict]
+        result = []
 
         for _, row in df.iterrows():
 
