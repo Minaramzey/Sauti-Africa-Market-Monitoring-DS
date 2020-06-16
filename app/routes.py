@@ -108,8 +108,8 @@ def get_table_dqws():
         'data_length', 'completeness', 'duplicates', 'mode_D', 'data_points',
         'DQI', 'DQI_cat']
         merged = merged[cols]
-        merged['start'] = merged['start'] .apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
-        merged['end'] = merged['end'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
+        merged['start'] = merged['start'] .apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
+        merged['end'] = merged['end'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
         merged['price_category'] = "wholesale"
         merged['DQI'] = merged['DQI'].apply(lambda x: round(x,4) if type(x) == float else None)
 
@@ -169,8 +169,8 @@ def get_table_dqrt():
         'data_length', 'completeness', 'duplicates', 'mode_D', 'data_points',
         'DQI', 'DQI_cat']
         merged = merged[cols]
-        merged['start'] = merged['start'] .apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
-        merged['end'] = merged['end'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
+        merged['start'] = merged['start'] .apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
+        merged['end'] = merged['end'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
         merged['price_category'] = "retail"
         merged['DQI'] = merged['DQI'].apply(lambda x: round(x,4) if type(x) == float else None)
 
@@ -208,7 +208,7 @@ def get_table_psws():
     labs_conn.close()
     print("Cursor and Connection Closed.")
 
-    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
+    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
     cols = ['country_code', 'market_name', 'product_name','date_price', 'observed_price', 'currency_code', 'observed_class', 
             'class_method', 'source_name']
@@ -250,7 +250,7 @@ def get_table_psrt():
     labs_conn.close()
     print("Cursor and Connection Closed.")
 
-    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
+    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
     cols = ['country_code', 'market_name', 'product_name','date_price', 'observed_price', 'currency_code', 'observed_class', 
             'class_method', 'source_name']
@@ -294,7 +294,7 @@ def get_table_psws_labeled():
     labs_conn.close()
     print("Cursor and Connection Closed.")
 
-    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
+    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
     cols = ['country_code', 'market_name', 'product_name','date_price', 'observed_price', 'currency_code', 'observed_class', 
             'class_method', 'source_name']
@@ -339,7 +339,7 @@ def get_table_psrt_labeled():
     print(df.dtypes)
 
 
-    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
+    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
     df['price_category'] = "retail"
 
@@ -383,7 +383,7 @@ def get_table_psws_labeled_latest():
 
     df = df.drop(labels = list_to_drop, axis=0)
 
-    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
+    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
     df['price_category'] = "wholesale"
 
@@ -428,7 +428,7 @@ def get_table_psrt_labeled_latest():
 
     df = df.drop(labels = list_to_drop, axis=0)
 
-    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
+    df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
     df['price_category'] = "retail"
 
@@ -621,8 +621,8 @@ def query_retail_data():
     if result:
 
         df = pd.DataFrame(result, columns=['id', 'product_name','market_id','market_name', 'country_code','source_id', 'source_name', 'currency_code', 'unit_scale', 'date_price', 'observed_price', 'observed_class', 'class_method', 'forecasted_price', 'forecasted_class', 'forecasting_model', 'normal_band_limit', 'stress_band_limit', 'alert_band_limit', 'stressness', 'date_run_model'])
-        df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
-        df['date_run_model'] = df['date_run_model'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d") if x is not None else x)
+        df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
+        df['date_run_model'] = df['date_run_model'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d") if x is not None else x)
         df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if x is not None else x)
         df['stressness'] = df['stressness'].replace(np.nan, -1)
         df = df.drop(labels=['id'],axis=1)
@@ -633,7 +633,7 @@ def query_retail_data():
 
         if stats:
 
-            stats_dict = {'start_date' : datetime.date.strftime(stats[0][5],"%y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': round(stats[0][14],2), 'min_price': stats[0][16], 'max_price': stats[0][20], 'days_between_start_end': stats[0][21], 'completeness': round(stats[0][22]*100 / .7123,2), 'DQI': 'not available', 'DQI_cat': 'not available'}
+            stats_dict = {'start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': round(stats[0][14],2), 'min_price': stats[0][16], 'max_price': stats[0][20], 'days_between_start_end': stats[0][21], 'completeness': round(stats[0][22]*100 / .7123,2), 'DQI': 'not available', 'DQI_cat': 'not available'}
 
             labs_curs.execute('''
             SELECT *
@@ -653,11 +653,7 @@ def query_retail_data():
 
             stats_dict = {'product_data':'missing'}
 
-        result = [stats_dict]
-
-        for _, row in df.iterrows():
-
-            result.append(dict(row))
+        result = {'stats':stats_dict, 'historical': df.to_dict('records')}
 
         return jsonify(result)
 
@@ -759,8 +755,8 @@ def query_wholesale_data():
     if result:
 
         df = pd.DataFrame(result, columns=['id', 'product_name','market_id','market_name', 'country_code','source_id', 'source_name', 'currency_code', 'unit_scale', 'date_price', 'observed_price', 'observed_class', 'class_method', 'forecasted_price', 'forecasted_class', 'forecasting_model', 'normal_band_limit', 'stress_band_limit', 'alert_band_limit', 'stressness', 'date_run_model'])
-        df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d"))
-        df['date_run_model'] = df['date_run_model'].apply(lambda x: datetime.date.strftime(x,"%y-%m-%d") if x is not None else x)
+        df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
+        df['date_run_model'] = df['date_run_model'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d") if x is not None else x)
         df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if x is not None else x)
         df['stressness'] = df['stressness'].replace(np.nan, -1)
         df = df.drop(labels=['id'],axis=1)
@@ -771,7 +767,7 @@ def query_wholesale_data():
 
         if stats:
 
-            stats_dict = {'start_date' : datetime.date.strftime(stats[0][5],"%y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': round(stats[0][14],2), 'min_price': stats[0][16], 'max_price': stats[0][20], 'days_between_start_end': stats[0][21], 'completeness': round(stats[0][22]*100 / .7123,2), 'DQI': 'not available', 'DQI_cat': 'not available'}
+            stats_dict = {'start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': round(stats[0][14],2), 'min_price': stats[0][16], 'max_price': stats[0][20], 'days_between_start_end': stats[0][21], 'completeness': round(stats[0][22]*100 / .7123,2), 'DQI': 'not available', 'DQI_cat': 'not available'}
 
             labs_curs.execute('''
             SELECT *
@@ -791,11 +787,7 @@ def query_wholesale_data():
 
             stats_dict = {'product_data':'missing'}
 
-        result = [stats_dict]
-
-        for _, row in df.iterrows():
-
-            result.append(dict(row))
+        result = {'stats':stats_dict, 'historical': df.to_dict('records')}
 
         return jsonify(result)
 
