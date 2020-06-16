@@ -9,3 +9,4 @@ class Config():
 
     DEBUG = os.environ.get('DEBUG')
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    JSON_SORT_KEYS = False

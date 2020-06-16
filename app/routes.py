@@ -653,9 +653,7 @@ def query_retail_data():
 
             stats_dict = {'product_data':'missing'}
 
-        result = {'stats':stats_dict, 'historical': df.to_dict('records')}
-
-        return jsonify(result)
+        return jsonify(quality = stats_dict, history = df.to_dict('records'))
 
     
     else:
@@ -787,9 +785,7 @@ def query_wholesale_data():
 
             stats_dict = {'product_data':'missing'}
 
-        result = {'stats':stats_dict, 'historical': df.to_dict('records')}
-
-        return jsonify(result)
+        return jsonify(quality = stats_dict, history = df.to_dict('records'))
 
     else:
         
