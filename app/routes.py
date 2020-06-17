@@ -620,7 +620,7 @@ def query_retail_data():
 
     if result:
 
-        df = pd.DataFrame(result, columns=['id', 'product_name','market_id','market_name', 'country_code','source_id', 'source_name', 'currency_code', 'unit_scale', 'date_price', 'observed_price', 'observed_class', 'class_method', 'forecasted_price', 'forecasted_class', 'forecasting_model', 'normal_band_limit', 'stress_band_limit', 'alert_band_limit', 'stressness', 'date_run_model'])
+        df = pd.DataFrame(result, columns=['id', 'product_name','market_id','market_name', 'country_code','source_id', 'source_name', 'currency_code', 'unit_scale', 'date_price', 'observed_price', 'observed_class', 'class_method', 'forecasted_price', 'forecasted_class', 'forecasting_model', 'normal_band_limit', 'stress_band_limit', 'alert_band_limit', 'stressness', 'date_run_model', 'observed_arima_alps_class', 'arima_alps_stressnes'])
         df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
         df['date_run_model'] = df['date_run_model'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d") if x is not None else x)
         df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if x is not None else x)
@@ -752,7 +752,7 @@ def query_wholesale_data():
 
     if result:
 
-        df = pd.DataFrame(result, columns=['id', 'product_name','market_id','market_name', 'country_code','source_id', 'source_name', 'currency_code', 'unit_scale', 'date_price', 'observed_price', 'observed_class', 'class_method', 'forecasted_price', 'forecasted_class', 'forecasting_model', 'normal_band_limit', 'stress_band_limit', 'alert_band_limit', 'stressness', 'date_run_model'])
+        df = pd.DataFrame(result, columns=['id', 'product_name','market_id','market_name', 'country_code','source_id', 'source_name', 'currency_code', 'unit_scale', 'date_price', 'observed_price', 'observed_class', 'class_method', 'forecasted_price', 'forecasted_class', 'forecasting_model', 'normal_band_limit', 'stress_band_limit', 'alert_band_limit', 'stressness', 'date_run_model', 'observed_arima_alps_class', 'arima_alps_stressnes'])
         df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
         df['date_run_model'] = df['date_run_model'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d") if x is not None else x)
         df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if x is not None else x)
