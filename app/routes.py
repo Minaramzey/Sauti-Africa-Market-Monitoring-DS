@@ -193,7 +193,7 @@ def get_table_psws():
                         source_name, currency_code, date_price,
                         observed_price, observed_class, class_method,
                         stressness
-                        FROM wholesale_prices;"""
+                        FROM past_wholesale_prices;"""
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
 
@@ -235,7 +235,7 @@ def get_table_psrt():
                         source_name, currency_code, date_price,
                         observed_price, observed_class, class_method,
                         stressness
-                        FROM retail_prices;"""
+                        FROM past_retail_prices;"""
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
 
@@ -278,7 +278,7 @@ def get_table_psws_labeled():
                         source_name, currency_code, date_price,
                         observed_price, observed_class, class_method,
                         stressness
-                        FROM wholesale_prices
+                        FROM past_wholesale_prices
                         WHERE observed_class IS NOT NULL;"""
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
@@ -320,7 +320,7 @@ def get_table_psrt_labeled():
                         source_name, currency_code, date_price,
                         observed_price, observed_class, class_method,
                         stressness
-                        FROM retail_prices
+                        FROM past_retail_prices
                         WHERE observed_class IS NOT NULL;"""
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
@@ -363,7 +363,7 @@ def get_table_psws_labeled_latest():
                         source_name, currency_code, date_price,
                         observed_price, observed_class, class_method,
                         stressness
-                        FROM wholesale_prices
+                        FROM past_wholesale_prices
                         WHERE observed_class IS NOT NULL;"""
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
@@ -408,7 +408,7 @@ def get_table_psrt_labeled_latest():
                         source_name, currency_code, date_price,
                         observed_price, observed_class, class_method,
                         stressness
-                        FROM retail_prices
+                        FROM past_retail_prices
                         WHERE observed_class IS NOT NULL;"""
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
@@ -569,7 +569,7 @@ def query_retail_data():
 
     query_0 = ''' 
             SELECT *
-            FROM retail_prices
+            FROM past_retail_prices
             WHERE
             '''
 
@@ -701,7 +701,7 @@ def query_wholesale_data():
 
     query_0 = ''' 
             SELECT *
-            FROM wholesale_prices
+            FROM past_wholesale_prices
             WHERE
             '''
 
@@ -848,7 +848,7 @@ def get_available_pairs():
 
                     labs_curs.execute('''
                     SELECT DISTINCT(product_name) 
-                    FROM retail_prices
+                    FROM past_retail_prices
                     WHERE country_code = %s
                     AND market_name = %s
                     ''', (country,market))
@@ -867,7 +867,7 @@ def get_available_pairs():
 
                     labs_curs.execute('''
                     SELECT DISTINCT(product_name) 
-                    FROM wholesale_prices
+                    FROM past_wholesale_prices
                     WHERE country_code = %s
                     AND market_name = %s
                     ''', (country,market))
