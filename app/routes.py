@@ -112,6 +112,7 @@ def get_table_dqws():
         merged['end'] = merged['end'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
         merged['price_category'] = "wholesale"
         merged['DQI'] = merged['DQI'].apply(lambda x: round(x,4) if type(x) == float else None)
+        merged['completeness'] = (merged['completeness'].apply(lambda x: x*100 if type(x) == float else None)).astype(str) + ' %'
 
         result = []
         for _, row in merged.iterrows():
@@ -173,6 +174,7 @@ def get_table_dqrt():
         merged['end'] = merged['end'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
         merged['price_category'] = "retail"
         merged['DQI'] = merged['DQI'].apply(lambda x: round(x,4) if type(x) == float else None)
+        merged['completeness'] = (merged['completeness'].apply(lambda x: x*100 if type(x) == float else None)).astype(str) + ' %'
 
         result = []
         for _, row in merged.iterrows():
