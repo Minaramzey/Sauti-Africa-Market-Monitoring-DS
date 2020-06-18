@@ -192,7 +192,7 @@ def get_table_psws():
     Q_select_all = """SELECT product_name, market_name, country_code,
                         source_name, currency_code, date_price,
                         observed_price, observed_class, class_method,
-                        stressness
+                        alps_stressness
                         FROM past_wholesale_prices;"""
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
@@ -202,14 +202,14 @@ def get_table_psws():
     df = pd.DataFrame(rows, columns= [
                     "product_name", "market_name", "country_code", "source_name",
                     "currency_code", "date_price", "observed_price", 
-                    "observed_class", "class_method", "stressness"
+                    "observed_class", "class_method", "alps_stressness"
             ])
     labs_curs.close()
     labs_conn.close()
     print("Cursor and Connection Closed.")
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
-    df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
     cols = ['country_code', 'market_name', 'product_name','date_price', 'observed_price', 'currency_code', 'observed_class', 
             'class_method', 'source_name']
     df = df[cols]
@@ -233,8 +233,8 @@ def get_table_psrt():
     
     Q_select_all = """SELECT product_name, market_name, country_code,
                         source_name, currency_code, date_price,
-                        observed_price, observed_class, class_method,
-                        stressness
+                        observed_price, observed_alps_class, class_method,
+                        alps_stressness
                         FROM past_retail_prices;"""
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
@@ -244,15 +244,15 @@ def get_table_psrt():
     df = pd.DataFrame(rows, columns= [
                     "product_name", "market_name", "country_code", "source_name",
                     "currency_code", "date_price", "observed_price", 
-                    "observed_class", "class_method", "stressness"
+                    "observed_alps_class", "class_method", "alps_stressness"
             ])
     labs_curs.close()
     labs_conn.close()
     print("Cursor and Connection Closed.")
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
-    df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
-    cols = ['country_code', 'market_name', 'product_name','date_price', 'observed_price', 'currency_code', 'observed_class', 
+    df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    cols = ['country_code', 'market_name', 'product_name','date_price', 'observed_price', 'currency_code', 'observed_alps_class', 
             'class_method', 'source_name']
     # df = df[cols]
     df['price_category'] = "retail"
@@ -276,10 +276,10 @@ def get_table_psws_labeled():
     
     Q_select_all = """SELECT product_name, market_name, country_code,
                         source_name, currency_code, date_price,
-                        observed_price, observed_class, class_method,
+                        observed_price, observed_alps_class, class_method,
                         stressness
                         FROM past_wholesale_prices
-                        WHERE observed_class IS NOT NULL;"""
+                        WHERE observed_alps_class IS NOT NULL;"""
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
 
@@ -288,7 +288,7 @@ def get_table_psws_labeled():
     df = pd.DataFrame(rows, columns= [
                     "product_name", "market_name", "country_code", "source_name",
                     "currency_code", "date_price", "observed_price", 
-                    "observed_class", "class_method", "stressness"
+                    "observed_alps_class", "class_method", "stressness"
             ])
     labs_curs.close()
     labs_conn.close()
@@ -296,7 +296,7 @@ def get_table_psws_labeled():
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
-    cols = ['country_code', 'market_name', 'product_name','date_price', 'observed_price', 'currency_code', 'observed_class', 
+    cols = ['country_code', 'market_name', 'product_name','date_price', 'observed_price', 'currency_code', 'observed_alps_class', 
             'class_method', 'source_name']
     # df = df[cols]
     df['price_category'] = "wholesale"
@@ -341,6 +341,7 @@ def get_table_psrt_labeled():
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['observed_class'] = df['observed_class'] + ' ('+ df['stressness'].astype(str) + ' %)' 
     df['price_category'] = "retail"
 
     result = []
@@ -385,6 +386,7 @@ def get_table_psws_labeled_latest():
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['observed_class'] = df['observed_class'] + ' ('+ df['stressness'].astype(str) + ' %)' 
     df['price_category'] = "wholesale"
 
     print(df.dtypes)
@@ -430,6 +432,7 @@ def get_table_psrt_labeled_latest():
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['observed_class'] = df['observed_class'] + ' ('+ df['stressness'].astype(str) + ' %)' 
     df['price_category'] = "retail"
 
     result = []
