@@ -191,9 +191,9 @@ def get_table_psws():
     
     Q_select_all = """SELECT product_name, market_name, country_code,
                         source_name, currency_code, date_price,
-                        observed_price, observed_class, class_method,
-                        alps_stressness
-                        FROM past_wholesale_prices;"""
+                        observed_price, observed_alps_class, alps_type_method,
+                        alps_stressness, observed_arima_alps_class, arima_alps_stressness
+                        FROM wholesale_prices;"""
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
 
@@ -202,7 +202,8 @@ def get_table_psws():
     df = pd.DataFrame(rows, columns= [
                     "product_name", "market_name", "country_code", "source_name",
                     "currency_code", "date_price", "observed_price", 
-                    "observed_class", "class_method", "alps_stressness"
+                    "observed_alps_class", "alps_type_method", "alps_stressness",
+                    "observed_arima_alps_class", "arima_alps_stressness"
             ])
     labs_curs.close()
     labs_conn.close()
@@ -210,9 +211,7 @@ def get_table_psws():
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
-    cols = ['country_code', 'market_name', 'product_name','date_price', 'observed_price', 'currency_code', 'observed_class', 
-            'class_method', 'source_name']
-    df = df[cols]
+    df['observed_alps_class'] = df['observed_alps_class'] + ' ('+ df['alps_stressness'].astype(str) + ' %)' 
     df['price_category'] = "wholesale"
 
     result = []
@@ -233,9 +232,9 @@ def get_table_psrt():
     
     Q_select_all = """SELECT product_name, market_name, country_code,
                         source_name, currency_code, date_price,
-                        observed_price, observed_alps_class, class_method,
-                        alps_stressness
-                        FROM past_retail_prices;"""
+                        observed_price, observed_alps_class, alps_type_method,
+                        alps_stressness, observed_arima_alps_class, arima_alps_stressness
+                        FROM retail_prices;"""
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
 
@@ -244,7 +243,8 @@ def get_table_psrt():
     df = pd.DataFrame(rows, columns= [
                     "product_name", "market_name", "country_code", "source_name",
                     "currency_code", "date_price", "observed_price", 
-                    "observed_alps_class", "class_method", "alps_stressness"
+                    "observed_alps_class", "alps_type_method", "alps_stressness",
+                    "observed_arima_alps_class", "arima_alps_stressness"
             ])
     labs_curs.close()
     labs_conn.close()
@@ -252,9 +252,11 @@ def get_table_psrt():
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
-    cols = ['country_code', 'market_name', 'product_name','date_price', 'observed_price', 'currency_code', 'observed_alps_class', 
-            'class_method', 'source_name']
-    # df = df[cols]
+    df['alps_stressness'] = df['alps_stressness'].astype(str)
+    df['observed_alps_class'] = df['observed_alps_class'].astype(str) + ' ('+ df['alps_stressness'] + ' %)' 
+    df['arima_alps_stressness'] = df['arima_alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['arima_alps_stressness'] = df['arima_alps_stressness'].astype(str)
+    df['observed_arima_alps_class'] = df['observed_arima_alps_class'].astype(str) + ' ('+ df['arima_alps_stressness'] + ' %)' 
     df['price_category'] = "retail"
 
     result = []
@@ -276,10 +278,12 @@ def get_table_psws_labeled():
     
     Q_select_all = """SELECT product_name, market_name, country_code,
                         source_name, currency_code, date_price,
-                        observed_price, observed_alps_class, class_method,
-                        stressness
-                        FROM past_wholesale_prices
-                        WHERE observed_alps_class IS NOT NULL;"""
+                        observed_price, observed_alps_class, alps_type_method,
+                        alps_stressness, observed_arima_alps_class, arima_alps_stressness
+                        FROM wholesale_prices
+                        WHERE observed_alps_class IS NOT NULL
+                        OR observed_arima_alps_class IS NOT NULL;
+                        """
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
 
@@ -288,17 +292,20 @@ def get_table_psws_labeled():
     df = pd.DataFrame(rows, columns= [
                     "product_name", "market_name", "country_code", "source_name",
                     "currency_code", "date_price", "observed_price", 
-                    "observed_alps_class", "class_method", "stressness"
+                    "observed_alps_class", "alps_type_method", "alps_stressness",
+                    "observed_arima_alps_class", "arima_alps_stressness"
             ])
     labs_curs.close()
     labs_conn.close()
     print("Cursor and Connection Closed.")
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
-    df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
-    cols = ['country_code', 'market_name', 'product_name','date_price', 'observed_price', 'currency_code', 'observed_alps_class', 
-            'class_method', 'source_name']
-    # df = df[cols]
+    df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['alps_stressness'] = df['alps_stressness'].astype(str)
+    df['observed_alps_class'] = df['observed_alps_class'].astype(str) + ' ('+ df['alps_stressness'] + ' %)' 
+    df['arima_alps_stressness'] = df['arima_alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['arima_alps_stressness'] = df['arima_alps_stressness'].astype(str)
+    df['observed_arima_alps_class'] = df['observed_arima_alps_class'].astype(str) + ' ('+ df['arima_alps_stressness'] + ' %)' 
     df['price_category'] = "wholesale"
 
     result = []
@@ -318,10 +325,12 @@ def get_table_psrt_labeled():
     
     Q_select_all = """SELECT product_name, market_name, country_code,
                         source_name, currency_code, date_price,
-                        observed_price, observed_class, class_method,
-                        stressness
-                        FROM past_retail_prices
-                        WHERE observed_class IS NOT NULL;"""
+                        observed_price, observed_alps_class, alps_type_method,
+                        alps_stressness, observed_arima_alps_class, arima_alps_stressness
+                        FROM wholesale_prices
+                        WHERE observed_alps_class IS NOT NULL
+                        OR observed_arima_alps_class IS NOT NULL;
+                        """
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
 
@@ -330,18 +339,23 @@ def get_table_psrt_labeled():
     df = pd.DataFrame(rows, columns= [
                     "product_name", "market_name", "country_code", "source_name",
                     "currency_code", "date_price", "observed_price", 
-                    "observed_class", "class_method", "stressness"
+                    "observed_alps_class", "alps_type_method", "alps_stressness",
+                    "observed_arima_alps_class", "arima_alps_stressness"
             ])
     labs_curs.close()
     labs_conn.close()
     print("Cursor and Connection Closed.")
 
-    print(df.dtypes)
+    print(df)
 
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
-    df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
-    df['observed_class'] = df['observed_class'] + ' ('+ df['stressness'].astype(str) + ' %)' 
+    df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['alps_stressness'] = df['alps_stressness'].astype(str)
+    df['observed_alps_class'] = df['observed_alps_class'].astype(str) + ' ('+ df['alps_stressness'] + ' %)' 
+    df['arima_alps_stressness'] = df['arima_alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['arima_alps_stressness'] = df['arima_alps_stressness'].astype(str)
+    df['observed_arima_alps_class'] = df['observed_arima_alps_class'].astype(str) + ' ('+ df['arima_alps_stressness'] + ' %)' 
     df['price_category'] = "retail"
 
     result = []
@@ -362,10 +376,12 @@ def get_table_psws_labeled_latest():
     
     Q_select_all = """SELECT product_name, market_name, country_code,
                         source_name, currency_code, date_price,
-                        observed_price, observed_class, class_method,
-                        stressness
-                        FROM past_wholesale_prices
-                        WHERE observed_class IS NOT NULL;"""
+                        observed_price, observed_alps_class, alps_type_method,
+                        alps_stressness, observed_arima_alps_class, arima_alps_stressness
+                        FROM wholesale_prices
+                        WHERE observed_alps_class IS NOT NULL
+                        OR observed_arima_alps_class IS NOT NULL;
+                        """
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
 
@@ -374,7 +390,8 @@ def get_table_psws_labeled_latest():
     df = pd.DataFrame(rows, columns= [
                     "product_name", "market_name", "country_code", "source_name",
                     "currency_code", "date_price", "observed_price", 
-                    "observed_class", "class_method", "stressness"
+                    "observed_alps_class", "alps_type_method", "alps_stressness",
+                    "observed_arima_alps_class", "arima_alps_stressness"
             ])
     labs_curs.close()
     labs_conn.close()
@@ -385,11 +402,13 @@ def get_table_psws_labeled_latest():
     df = df.drop(labels = list_to_drop, axis=0)
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
-    df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
-    df['observed_class'] = df['observed_class'] + ' ('+ df['stressness'].astype(str) + ' %)' 
+    df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['alps_stressness'] = df['alps_stressness'].astype(str)
+    df['observed_alps_class'] = df['observed_alps_class'].astype(str) + ' ('+ df['alps_stressness'] + ' %)' 
+    df['arima_alps_stressness'] = df['arima_alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['arima_alps_stressness'] = df['arima_alps_stressness'].astype(str)
+    df['observed_arima_alps_class'] = df['observed_arima_alps_class'].astype(str) + ' ('+ df['arima_alps_stressness'] + ' %)' 
     df['price_category'] = "wholesale"
-
-    print(df.dtypes)
 
     result = []
     for _, row in df.iterrows():
@@ -408,10 +427,12 @@ def get_table_psrt_labeled_latest():
     
     Q_select_all = """SELECT product_name, market_name, country_code,
                         source_name, currency_code, date_price,
-                        observed_price, observed_class, class_method,
-                        stressness
-                        FROM past_retail_prices
-                        WHERE observed_class IS NOT NULL;"""
+                        observed_price, observed_alps_class, alps_type_method,
+                        alps_stressness, observed_arima_alps_class, arima_alps_stressness
+                        FROM wholesale_prices
+                        WHERE observed_alps_class IS NOT NULL
+                        OR observed_arima_alps_class IS NOT NULL;
+                        """
     labs_curs.execute(Q_select_all)
     print("\nSELECT * Query Excecuted.")
 
@@ -420,7 +441,8 @@ def get_table_psrt_labeled_latest():
     df = pd.DataFrame(rows, columns= [
                     "product_name", "market_name", "country_code", "source_name",
                     "currency_code", "date_price", "observed_price", 
-                    "observed_class", "class_method", "stressness"
+                    "observed_alps_class", "alps_type_method", "alps_stressness",
+                    "observed_arima_alps_class", "arima_alps_stressness"
             ])
     labs_curs.close()
     labs_conn.close()
@@ -431,8 +453,12 @@ def get_table_psrt_labeled_latest():
     df = df.drop(labels = list_to_drop, axis=0)
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
-    df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
-    df['observed_class'] = df['observed_class'] + ' ('+ df['stressness'].astype(str) + ' %)' 
+    df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['alps_stressness'] = df['alps_stressness'].astype(str)
+    df['observed_alps_class'] = df['observed_alps_class'].astype(str) + ' ('+ df['alps_stressness'] + ' %)' 
+    df['arima_alps_stressness'] = df['arima_alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
+    df['arima_alps_stressness'] = df['arima_alps_stressness'].astype(str)
+    df['observed_arima_alps_class'] = df['observed_arima_alps_class'].astype(str) + ' ('+ df['arima_alps_stressness'] + ' %)' 
     df['price_category'] = "retail"
 
     result = []
@@ -572,7 +598,7 @@ def query_retail_data():
 
     query_0 = ''' 
             SELECT *
-            FROM past_retail_prices
+            FROM retail_prices
             WHERE
             '''
 
@@ -623,11 +649,17 @@ def query_retail_data():
 
     if result:
 
-        df = pd.DataFrame(result, columns=['id', 'product_name','market_id','market_name', 'country_code','source_id', 'source_name', 'currency_code', 'unit_scale', 'date_price', 'observed_price', 'observed_class', 'class_method', 'forecasted_price', 'forecasted_class', 'forecasting_model', 'normal_band_limit', 'stress_band_limit', 'alert_band_limit', 'stressness', 'date_run_model', 'observed_arima_alps_class', 'arima_alps_stressnes'])
+        df = pd.DataFrame(result, columns=['id', 'product_name','market_id','market_name', 'country_code','source_id',
+                                            'source_name', 'currency_code', 'unit_scale', 'date_price', 'observed_price',
+                                            'observed_alps_class', 'alps_type_method', 'forecasted_price', 'forecasted_class', 
+                                            'forecasting_model', 'trending', 'normal_band_limit', 'stress_band_limit', 'alert_band_limit',
+                                            'alps_stressness', 'date_run_model', 'observed_arima_alps_class', 'arima_alps_stressnes'])
         df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
         df['date_run_model'] = df['date_run_model'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d") if x is not None else x)
-        df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if x is not None else x)
-        df['stressness'] = df['stressness'].replace(np.nan, -1)
+        df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if x is not None else x)
+        df['alps_stressness'] = df['alps_stressness'].replace(np.nan, -1)
+        df['arima_alps_stressnes'] = df['arima_alps_stressnes'].apply(lambda x: round(x*100,2) if x is not None else x)
+        df['arima_alps_stressnes'] = df['arima_alps_stressnes'].replace(np.nan, -1)
         df = df.drop(labels=['id'],axis=1)
 
         labs_curs.execute(query_1,to_filter)
@@ -704,7 +736,7 @@ def query_wholesale_data():
 
     query_0 = ''' 
             SELECT *
-            FROM past_wholesale_prices
+            FROM wholesale_prices
             WHERE
             '''
 
@@ -755,11 +787,17 @@ def query_wholesale_data():
 
     if result:
 
-        df = pd.DataFrame(result, columns=['id', 'product_name','market_id','market_name', 'country_code','source_id', 'source_name', 'currency_code', 'unit_scale', 'date_price', 'observed_price', 'observed_class', 'class_method', 'forecasted_price', 'forecasted_class', 'forecasting_model', 'normal_band_limit', 'stress_band_limit', 'alert_band_limit', 'stressness', 'date_run_model', 'observed_arima_alps_class', 'arima_alps_stressnes'])
+        df = pd.DataFrame(result, columns=['id', 'product_name','market_id','market_name', 'country_code','source_id',
+                                            'source_name', 'currency_code', 'unit_scale', 'date_price', 'observed_price',
+                                            'observed_alps_class', 'alps_type_method', 'forecasted_price', 'forecasted_class', 
+                                            'forecasting_model', 'trending', 'normal_band_limit', 'stress_band_limit', 'alert_band_limit',
+                                            'alps_stressness', 'date_run_model', 'observed_arima_alps_class', 'arima_alps_stressnes'])
         df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
         df['date_run_model'] = df['date_run_model'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d") if x is not None else x)
-        df['stressness'] = df['stressness'].apply(lambda x: round(x*100,2) if x is not None else x)
-        df['stressness'] = df['stressness'].replace(np.nan, -1)
+        df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if x is not None else x)
+        df['alps_stressness'] = df['alps_stressness'].replace(np.nan, -1)
+        df['arima_alps_stressnes'] = df['arima_alps_stressnes'].apply(lambda x: round(x*100,2) if x is not None else x)
+        df['arima_alps_stressnes'] = df['arima_alps_stressnes'].replace(np.nan, -1)
         df = df.drop(labels=['id'],axis=1)
 
         labs_curs.execute(query_1,to_filter)
@@ -851,7 +889,7 @@ def get_available_pairs():
 
                     labs_curs.execute('''
                     SELECT DISTINCT(product_name) 
-                    FROM past_retail_prices
+                    FROM retail_prices
                     WHERE country_code = %s
                     AND market_name = %s
                     ''', (country,market))
@@ -870,7 +908,7 @@ def get_available_pairs():
 
                     labs_curs.execute('''
                     SELECT DISTINCT(product_name) 
-                    FROM past_wholesale_prices
+                    FROM wholesale_prices
                     WHERE country_code = %s
                     AND market_name = %s
                     ''', (country,market))
