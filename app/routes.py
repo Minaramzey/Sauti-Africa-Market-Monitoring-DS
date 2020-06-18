@@ -112,7 +112,7 @@ def get_table_dqws():
         merged['end'] = merged['end'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
         merged['price_category'] = "wholesale"
         merged['DQI'] = merged['DQI'].apply(lambda x: round(x,4) if type(x) == float else None)
-        merged['completeness'] = (merged['completeness'].apply(lambda x: x*100 if type(x) == float else None)).astype(str) + ' %'
+        merged['completeness'] = (merged['completeness'].apply(lambda x: round(x*100,2) if type(x) == float else None)).astype(str) + ' %'
 
         result = []
         for _, row in merged.iterrows():
@@ -213,7 +213,7 @@ def get_table_psws():
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
-    merged['completeness'] = (merged['completeness'].apply(lambda x: round(x*100,2) if type(x) == float else None)).astype(str) + ' %'
+    df['observed_alps_class'] = df['observed_alps_class'] + ' ('+ df['alps_stressness'].astype(str) + ' %)' 
     df['price_category'] = "wholesale"
 
     result = []
