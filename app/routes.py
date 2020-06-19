@@ -700,6 +700,22 @@ def query_retail_data():
     result = labs_curs.fetchall()
 
 
+    labs_curs.execute('''
+                SELECT category_id
+                FROM products
+                WHERE product_name = %s
+    ''', (product_name,))
+
+    category_id = labs_curs.fetchall()[0][0]
+
+    labs_curs.execute('''
+                SELECT category_name
+                FROM categories
+                WHERE id = %s
+    ''', (category_id,))
+
+    product_category = labs_curs.fetchall()[0][0]
+
 
     if result:
 
@@ -731,7 +747,7 @@ def query_retail_data():
 
         if stats:
 
-            stats_dict = {'start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': round(stats[0][14],2), 'min_price': stats[0][16], 'max_price': stats[0][20], 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
+            stats_dict = {'product category':product_category,'price category' : 'retail','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': round(stats[0][14],2), 'min_price': stats[0][16], 'max_price': stats[0][20], 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
 
             labs_curs.execute('''
             SELECT *
@@ -846,6 +862,23 @@ def query_wholesale_data():
 
     result = labs_curs.fetchall()
 
+    labs_curs.execute('''
+                SELECT category_id
+                FROM products
+                WHERE product_name = %s
+    ''', (product_name,))
+
+    category_id = labs_curs.fetchall()[0][0]
+
+    labs_curs.execute('''
+                SELECT category_name
+                FROM categories
+                WHERE id = %s
+    ''', (category_id,))
+
+    product_category = labs_curs.fetchall()[0][0]
+
+
 
 
     if result:
@@ -877,7 +910,7 @@ def query_wholesale_data():
 
         if stats:
 
-            stats_dict = {'start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': round(stats[0][14],2), 'min_price': stats[0][16], 'max_price': stats[0][20], 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
+            stats_dict = {'product category':product_category,'price category' : 'Wholesale','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': round(stats[0][14],2), 'min_price': stats[0][16], 'max_price': stats[0][20], 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
 
             labs_curs.execute('''
             SELECT *
