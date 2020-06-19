@@ -35,4 +35,16 @@ Root mean square percentage error (rmspe)\
 1.15% for validation
 
 Finally, all the qc_id, best parameters, and RMSPE are save to database table 'hw_params_wholesale' and 'hw_params_retail' for future reference. 
+
+Pros and Cons:
+
+Pros: 
+1. Can be customized. User has total control over window size (days for prediciton), train-test-val split, and grid to start/refine search. 
+3. Highly tolerent, suitable for all time series, even the flat data. Will always return the best model configuration. 
+4. Forecast results are highly accurate. 
+5. Adaptive. User can add own model evaluation metrics, add random search instead of grid search.
+   
+Cons: 
+1. Time consuming
+2. User need to be familiar with python basics.
         
