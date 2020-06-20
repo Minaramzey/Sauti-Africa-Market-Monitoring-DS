@@ -623,6 +623,7 @@ def query_retail_data():
     market_name = query_parameters.get('market_name')
     country_code = query_parameters.get('country_code')
     source_name = query_parameters.get('source_name')
+    currency_code = query_parameters.get('currency_code')
 
     labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
                         password=os.environ.get('aws_db_password'),
@@ -689,6 +690,53 @@ def query_retail_data():
             query_0 += ' source_id = %s AND'
             query_1 += ' source_id = %s AND'
             to_filter.append(source_id)
+
+    else:
+
+        labs_curs.execute('''
+            SELECT source_id
+            FROM retail_prices
+            WHERE product_name = %s
+            AND market_id = %s
+            GROUP BY source_id
+            ORDER BY count(source_id) DESC;
+        ''', (product_name,market_id))
+      
+        source_id = labs_curs.fetchall()
+
+        if source_id:
+
+            source_id = source_id[0][0]
+            query_0 += ' source_id = %s AND'
+            query_1 += ' source_id = %s AND'
+            to_filter.append(source_id)
+
+
+    if currency_code:
+        query_0 += ' currency_code = %s AND'
+        query_1 += ' currency_code = %s AND'
+        to_filter.append(currency_code)    
+
+    else:
+
+        labs_curs.execute('''
+            SELECT currency_code
+            from retail_prices
+            WHERE product_name = %s
+            AND market_id = %s
+            GROUP BY currency_code
+            ORDER BY count(currency_code) DESC;
+        ''', (product_name,market_id))
+
+        currency_code = labs_curs.fetchall()
+
+        if currency_code:
+
+            currency_code = currency_code[0][0]
+            query_0 += ' currency_code = %s AND'
+            query_1 += ' currency_code = %s AND'
+            to_filter.append(currency_code) 
+
     if not (product_name and market_name and country_code):
         return page_not_found(404)
 
@@ -698,6 +746,8 @@ def query_retail_data():
     labs_curs.execute(query_0, to_filter)
 
     result = labs_curs.fetchall()
+
+    print(result)
 
 
     labs_curs.execute('''
@@ -714,8 +764,14 @@ def query_retail_data():
                 WHERE id = %s
     ''', (category_id,))
 
-    product_category = labs_curs.fetchall()[0][0]
+    product_category = labs_curs.fetchall()
 
+    if product_category:
+
+        product_category = product_category[0][0]
+
+    else:
+        product_category = 'Unknown'
 
     if result:
 
@@ -786,6 +842,7 @@ def query_wholesale_data():
     market_name = query_parameters.get('market_name')
     country_code = query_parameters.get('country_code')
     source_name = query_parameters.get('source_name')
+    currency_code = query_parameters.get('currency_code')
 
     labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
                         password=os.environ.get('aws_db_password'),
@@ -852,6 +909,54 @@ def query_wholesale_data():
             query_0 += ' source_id = %s AND'
             query_1 += ' source_id = %s AND'
             to_filter.append(source_id)
+
+    else:
+
+        labs_curs.execute('''
+            SELECT source_id
+            FROM wholesale_prices
+            WHERE product_name = %s
+            AND market_id = %s
+            GROUP BY source_id
+            ORDER BY count(source_id) DESC;
+        ''', (product_name,market_id))
+      
+        source_id = labs_curs.fetchall()
+
+        if source_id:
+
+            source_id = source_id[0][0]
+            query_0 += ' source_id = %s AND'
+            query_1 += ' source_id = %s AND'
+            to_filter.append(source_id)
+
+
+    if currency_code:
+
+        query_0 += ' currency_code = %s AND'
+        query_1 += ' currency_code = %s AND'
+        to_filter.append(currency_code)    
+
+    else:
+
+        labs_curs.execute('''
+            SELECT currency_code
+            from wholesale_prices
+            WHERE product_name = %s
+            AND market_id = %s
+            GROUP BY currency_code
+            ORDER BY count(currency_code) DESC;
+        ''', (product_name,market_id))
+
+        currency_code = labs_curs.fetchall()
+
+        if currency_code:
+
+            currency_code = currency_code[0][0]
+            query_0 += ' currency_code = %s AND'
+            query_1 += ' currency_code = %s AND'
+            to_filter.append(currency_code) 
+
     if not (product_name and market_name and country_code):
         return page_not_found(404)
 
@@ -876,9 +981,14 @@ def query_wholesale_data():
                 WHERE id = %s
     ''', (category_id,))
 
-    product_category = labs_curs.fetchall()[0][0]
+    product_category = labs_curs.fetchall()
 
+    if product_category:
 
+        product_category = product_category[0][0]
+
+    else:
+        product_category = 'Unknown'
 
 
     if result:
