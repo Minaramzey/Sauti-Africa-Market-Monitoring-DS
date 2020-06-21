@@ -68,7 +68,7 @@ def get_table_dqws():
 
         Q_select_all = """SELECT * FROM qc_wholesale_observed_price;"""
         labs_curs.execute(Q_select_all)
-        print("\nSELECT * Query Excecuted.")
+        # print("\nSELECT * Query Excecuted.")
 
         rows = labs_curs.fetchall()
 
@@ -81,21 +81,21 @@ def get_table_dqws():
 
         Q_select_all = """SELECT * FROM markets;"""
         labs_curs.execute(Q_select_all)
-        print("\nSELECT * Query Excecuted.")
+        # print("\nSELECT * Query Excecuted.")
 
         rowsM = labs_curs.fetchall()
         dfM = pd.DataFrame(rowsM, columns=["id", "market_id", "market_name", "country_code"])
         
         Q_select_all = """SELECT id, source_name FROM sources;"""
         labs_curs.execute(Q_select_all)
-        print("\nSELECT * Query Excecuted.")
+        # print("\nSELECT * Query Excecuted.")
 
         rowsM = labs_curs.fetchall()
         dfS = pd.DataFrame(rowsM, columns=["id", "source_name"])
 
         labs_curs.close()
         labs_conn.close()
-        print("Cursor and Connection Closed.")
+        # print("Cursor and Connection Closed.")
 
 
         merged = df.merge(dfM, left_on='market', right_on='market_id')
@@ -130,7 +130,7 @@ def get_table_dqrt():
 
         Q_select_all = """SELECT * FROM qc_retail_observed_price;"""
         labs_curs.execute(Q_select_all)
-        print("\nSELECT * Query Excecuted.")
+        # print("\nSELECT * Query Excecuted.")
 
         rows = labs_curs.fetchall()
 
@@ -143,21 +143,21 @@ def get_table_dqrt():
 
         Q_select_all = """SELECT * FROM markets;"""
         labs_curs.execute(Q_select_all)
-        print("\nSELECT * Query Excecuted.")
+        # print("\nSELECT * Query Excecuted.")
 
         rowsM = labs_curs.fetchall()
         dfM = pd.DataFrame(rowsM, columns=["id", "market_id", "market_name", "country_code"])
 
         Q_select_all = """SELECT id, source_name FROM sources;"""
         labs_curs.execute(Q_select_all)
-        print("\nSELECT * Query Excecuted.")
+        # print("\nSELECT * Query Excecuted.")
 
         rowsM = labs_curs.fetchall()
         dfS = pd.DataFrame(rowsM, columns=["id", "source_name"])
 
         labs_curs.close()
         labs_conn.close()
-        print("Cursor and Connection Closed.")
+        # print("Cursor and Connection Closed.")
 
 
         merged = df.merge(dfM, left_on='market', right_on='market_id')
@@ -197,7 +197,7 @@ def get_table_psws():
                         alps_stressness, observed_arima_alps_class, arima_alps_stressness
                         FROM wholesale_prices;"""
     labs_curs.execute(Q_select_all)
-    print("\nSELECT * Query Excecuted.")
+    # print("\nSELECT * Query Excecuted.")
 
     rows = labs_curs.fetchall()
 
@@ -209,7 +209,7 @@ def get_table_psws():
             ])
     labs_curs.close()
     labs_conn.close()
-    print("Cursor and Connection Closed.")
+    # print("Cursor and Connection Closed.")
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
@@ -250,7 +250,7 @@ def get_table_psrt():
                         alps_stressness, observed_arima_alps_class, arima_alps_stressness
                         FROM retail_prices;"""
     labs_curs.execute(Q_select_all)
-    print("\nSELECT * Query Excecuted.")
+    # print("\nSELECT * Query Excecuted.")
 
     rows = labs_curs.fetchall()
 
@@ -262,7 +262,7 @@ def get_table_psrt():
             ])
     labs_curs.close()
     labs_conn.close()
-    print("Cursor and Connection Closed.")
+    # print("Cursor and Connection Closed.")
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
@@ -307,7 +307,7 @@ def get_table_psws_labeled():
                         OR observed_arima_alps_class IS NOT NULL;
                         """
     labs_curs.execute(Q_select_all)
-    print("\nSELECT * Query Excecuted.")
+    # print("\nSELECT * Query Excecuted.")
 
     rows = labs_curs.fetchall()
 
@@ -319,7 +319,7 @@ def get_table_psws_labeled():
             ])
     labs_curs.close()
     labs_conn.close()
-    print("Cursor and Connection Closed.")
+    # print("Cursor and Connection Closed.")
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
@@ -362,7 +362,7 @@ def get_table_psrt_labeled():
                         OR observed_arima_alps_class IS NOT NULL;
                         """
     labs_curs.execute(Q_select_all)
-    print("\nSELECT * Query Excecuted.")
+    # print("\nSELECT * Query Excecuted.")
 
     rows = labs_curs.fetchall()
 
@@ -374,10 +374,7 @@ def get_table_psrt_labeled():
             ])
     labs_curs.close()
     labs_conn.close()
-    print("Cursor and Connection Closed.")
-
-    print(df)
-
+    # print("Cursor and Connection Closed.")
 
     df['date_price'] = df['date_price'].apply(lambda x: datetime.date.strftime(x,"%Y-%m-%d"))
     df['alps_stressness'] = df['alps_stressness'].apply(lambda x: round(x*100,2) if type(x) == float else None)
@@ -421,7 +418,7 @@ def get_table_psws_labeled_latest():
                         OR observed_arima_alps_class IS NOT NULL;
                         """
     labs_curs.execute(Q_select_all)
-    print("\nSELECT * Query Excecuted.")
+    # print("\nSELECT * Query Excecuted.")
 
     rows = labs_curs.fetchall()
 
@@ -433,7 +430,7 @@ def get_table_psws_labeled_latest():
             ])
     labs_curs.close()
     labs_conn.close()
-    print("Cursor and Connection Closed.")
+    # print("Cursor and Connection Closed.")
 
     list_to_drop = df[df.sort_values(by=['date_price'], ascending=False).duplicated(['product_name', 'market_name', 'source_name','currency_code'], keep='first')].index
 
@@ -480,7 +477,7 @@ def get_table_psrt_labeled_latest():
                         OR observed_arima_alps_class IS NOT NULL;
                         """
     labs_curs.execute(Q_select_all)
-    print("\nSELECT * Query Excecuted.")
+    # print("\nSELECT * Query Excecuted.")
 
     rows = labs_curs.fetchall()
 
@@ -492,7 +489,7 @@ def get_table_psrt_labeled_latest():
             ])
     labs_curs.close()
     labs_conn.close()
-    print("Cursor and Connection Closed.")
+    # print("Cursor and Connection Closed.")
 
     list_to_drop = df[df.sort_values(by=['date_price'], ascending=False).duplicated(['product_name', 'market_name', 'source_name','currency_code'], keep='first')].index
 
@@ -747,9 +744,6 @@ def query_retail_data():
 
     result = labs_curs.fetchall()
 
-    print(result)
-
-
     labs_curs.execute('''
                 SELECT category_id
                 FROM products
@@ -797,13 +791,23 @@ def query_retail_data():
 
         df = df.drop(labels=['id'],axis=1)
 
+        prices_stats = df[['date_price','observed_price']].sort_values(by=['observed_price'])
+
+        min_price_date = prices_stats.iloc[0,0]
+        min_price_value = round(prices_stats.iloc[0,1],2)
+
+        max_price_date = prices_stats.iloc[-1,0]
+        max_price_value = round(prices_stats.iloc[-1,1],2)
+
+        mean_price_value= round(df['observed_price'].mean(),2)
+
         labs_curs.execute(query_1,to_filter)
 
         stats = labs_curs.fetchall()
 
         if stats:
 
-            stats_dict = {'product category':product_category,'price category' : 'retail','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': round(stats[0][14],2), 'min_price': stats[0][16], 'max_price': stats[0][20], 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
+            stats_dict = {'product category':product_category,'price category' : 'retail','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': mean_price_value, 'min_price_date': min_price_date, 'min_price': min_price_value, 'max_price_date': max_price_date, 'max_price': max_price_value, 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
 
             labs_curs.execute('''
             SELECT *
@@ -1014,13 +1018,24 @@ def query_wholesale_data():
         df['arima_alps_stressness'] = df['arima_alps_stressness'].replace('nan', 'Not available')
         df = df.drop(labels=['id'],axis=1)
 
+        prices_stats = df[['date_price','observed_price']].sort_values(by=['observed_price'])
+
+        min_price_date = prices_stats.iloc[0,0]
+        min_price_value = round(prices_stats.iloc[0,1],2)
+
+        max_price_date = prices_stats.iloc[-1,0]
+        max_price_value = round(prices_stats.iloc[-1,1],2)
+
+        mean_price_value= round(df['observed_price'].mean(),2)
+
+
         labs_curs.execute(query_1,to_filter)
 
         stats = labs_curs.fetchall()
 
         if stats:
 
-            stats_dict = {'product category':product_category,'price category' : 'Wholesale','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': round(stats[0][14],2), 'min_price': stats[0][16], 'max_price': stats[0][20], 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
+            stats_dict = {'product category':product_category,'price category' : 'Wholesale','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': mean_price_value, 'min_price_date': min_price_date, 'min_price': min_price_value, 'max_price_date': max_price_date, 'max_price': max_price_value, 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
 
             labs_curs.execute('''
             SELECT *
