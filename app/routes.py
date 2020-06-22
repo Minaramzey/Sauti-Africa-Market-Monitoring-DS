@@ -807,7 +807,7 @@ def query_retail_data():
 
         if stats:
 
-            stats_dict = {'product category':product_category,'price category' : 'retail','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': mean_price_value, 'min_price_date': min_price_date, 'min_price': min_price_value, 'max_price_date': max_price_date, 'max_price': max_price_value, 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
+            stats_dict = {'product_category':product_category,'price_category' : 'retail','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': mean_price_value, 'min_price_date': min_price_date, 'min_price': min_price_value, 'max_price_date': max_price_date, 'max_price': max_price_value, 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
 
             labs_curs.execute('''
             SELECT *
@@ -1035,7 +1035,7 @@ def query_wholesale_data():
 
         if stats:
 
-            stats_dict = {'product category':product_category,'price category' : 'Wholesale','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': mean_price_value, 'min_price_date': min_price_date, 'min_price': min_price_value, 'max_price_date': max_price_date, 'max_price': max_price_value, 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
+            stats_dict = {'product_category':product_category,'price_category' : 'Wholesale','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': mean_price_value, 'min_price_date': min_price_date, 'min_price': min_price_value, 'max_price_date': max_price_date, 'max_price': max_price_value, 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
 
             labs_curs.execute('''
             SELECT *
