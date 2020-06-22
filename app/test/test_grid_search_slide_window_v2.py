@@ -20,6 +20,7 @@ MARKET = 'Dar Es Salaam : TZA'
 PRODUCT = 'Morogoro Rice'
 SOURCE = 1
 SALE_TYPE = 'retail'
+
 ts.extract_data(MARKET, PRODUCT, SOURCE, SALE_TYPE)
 sale = ts.data
 ts_name = ts.name

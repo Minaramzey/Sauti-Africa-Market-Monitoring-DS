@@ -4,10 +4,10 @@ import time
 # from math import sqrt, floor
 # import numpy as np
 # import pandas as pd
-
 from code.db_connect import dbConnect
 from code.data_process_v2 import DataCleaning, DataQualityCheck, TimeSeries
 from code.classic_forecast_v2 import ForecastModels, ModelConfig, grid_search_slide_window, walk_forward_validation_slide_window, train_test_split, score_model, measure_rmspe
+from test_59_sequence import ts_list
 
 ## test time series
 SALE_TYPE = 'retail'
@@ -17,24 +17,21 @@ db_c = dbConnect()
 source_tablename = 'sources'
 source_table = db_c.read_analytical_db(source_tablename)
 
-## get quality data for grid search
-qc_tablename = 'qc_' + SALE_TYPE + '_observed_price'
-qc_table = db_c.read_analytical_db(qc_tablename)
-# top quality time series table
-qc = qc_table[qc_table['DQI_cat'] == 'great'].sort_values(by ='DQI', ascending = False)
-print(qc.head())
-
 """model config"""
 mc = ModelConfig()
 # config list for one time series
 cfg_list = mc.exp_smoothing_configs(seasonal=[6, 12])
 print(f'A total of {len(cfg_list)} configurations.')
 
-for idx in range(len(qc)):
+start_time = time.time()
+
+ts = TimeSeries()
+for tsi in ts_list:
     # get right parameters for ts object
-    MARKET = qc.iloc[idx,1]
-    PRODUCT = qc.iloc[idx,2]
-    SOURCE = qc.iloc[idx,3]
+    MARKET = tsi[1]
+    PRODUCT = tsi[0]
+    SOURCE = tsi[3]
+    print(MARKET, PRODUCT, SOURCE)
     
     ts.extract_data(MARKET, PRODUCT, SOURCE, SALE_TYPE)
     sale = ts.data
@@ -55,11 +52,11 @@ for idx in range(len(qc)):
     train, test = train_test_split(data, n_test)
     print(f'Data length: train={len(train)}, test={len(test)}, val={len(val)}')
 
-    start_time = time.time()
+    
     scores = grid_search_slide_window(
         data, n_test, window_length, slide_distance, cfg_list, parallel=True)
     elapsed_time = time.time() - start_time
-    print(f"elapsed time is {elapsed_time} sec.")
+    
 
     for error, cfg in scores[:10]:
         print(error, cfg)
@@ -86,3 +83,4 @@ for idx in range(len(qc)):
     line = ', '.join(x for x in results)
     f.write(line + '\n')
     f.close()
+print(f"elapsed time is {elapsed_time} sec.")
