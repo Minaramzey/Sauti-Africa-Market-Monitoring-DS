@@ -155,15 +155,19 @@ class TimeSeries():
         #get only pd series for sale data for deeper clearning
         sale = sale[sale_colname]
         
+        last_date = sale.index[-1]
+        last_observation = sale.values[-1]
         # time series clean up
         dqc = DataQualityCheck()
         sale = dqc.remove_outliers(sale, 0.05, 0.8)
         sale = dqc.remove_duplicates(sale)
         sale = dqc.day_by_day(sale)
-
+        
         self.name = ts_name
         self.currency = currency
         self.data = sale
+        self.lastDate = last_date
+        self.lastObservation = last_observation
         # plt.plot(sale,'.')
         # plt.show()
         # return sale

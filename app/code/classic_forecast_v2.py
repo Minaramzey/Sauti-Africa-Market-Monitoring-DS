@@ -209,7 +209,7 @@ def walk_forward_validation_slide_window(data, n_test, window_length,  slide_dis
     return (error, predictions)
     
       
-def score_model(data, n_test, window_length, slide_distance, cfg, debug=True):
+def score_model(data, n_test, window_length, slide_distance, cfg, debug=False):
     # score a model, return None on failure, else return rmspe
     error = []
     # init result

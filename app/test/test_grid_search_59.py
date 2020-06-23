@@ -27,60 +27,72 @@ start_time = time.time()
 
 ts = TimeSeries()
 for tsi in ts_list:
+
     # get right parameters for ts object
     MARKET = tsi[1]
     PRODUCT = tsi[0]
     SOURCE = tsi[3]
     print(MARKET, PRODUCT, SOURCE)
-    
-    ts.extract_data(MARKET, PRODUCT, SOURCE, SALE_TYPE)
-    sale = ts.data
-    ts_name = ts.name
-    ts_currency = ts.currency
-    # interpolate for missing values
-    sale = sale.interpolate(method='nearest')
-    
-    """prepare data"""
-    # split sale into val and data
-    n_val = 30
-    val = sale[-n_val:]
-    data = sale[: -n_val]
-    # split data into train and test
-    n_test = round(len(data)*0.4)
-    window_length = 30
-    slide_distance = 14
-    train, test = train_test_split(data, n_test)
-    print(f'Data length: train={len(train)}, test={len(test)}, val={len(val)}')
+    try:
+        ts.extract_data(MARKET, PRODUCT, SOURCE, SALE_TYPE)
+        sale = ts.data
+        ts_name = ts.name
+        ts_currency = ts.currency
+        last_date = ts.lastDate
+        last_observation = ts.lastObservation
+    except:
+        print('Cannot extract time sequence')
+    try:
+        # interpolate for missing values
+        sale = sale.interpolate(method='nearest')
+    except:
+        print('Cannot interpolate using nearest method.')
+    try: 
+        """prepare data"""
+        # split sale into val and data
+        n_val = 30
+        val = sale[-n_val:]
+        data = sale[: -n_val]
+        # split data into train and test
+        n_test = round(len(data)*0.4)
+        window_length = 30
+        slide_distance = 14
+        train, test = train_test_split(data, n_test)
+        print(f'Data length: train={len(train)}, test={len(test)}, val={len(val)}')
+    except:
+        print('Cannot split data to prescribed split length!')
+    try:    
+        scores = grid_search_slide_window(
+            data, n_test, window_length, slide_distance, cfg_list, parallel=True)
+        elapsed_time = time.time() - start_time
+        
 
-    
-    scores = grid_search_slide_window(
-        data, n_test, window_length, slide_distance, cfg_list, parallel=True)
-    elapsed_time = time.time() - start_time
-    
+        for error, cfg in scores[:10]:
+            print(error, cfg)
 
-    for error, cfg in scores[:10]:
-        print(error, cfg)
+        # # top score
+        error_test, cfg_selected = scores[1]
 
-    # # top score
-    error_test, cfg_selected = scores[1]
+        # forecast
+        models = ForecastModels()
+        history = data[:-30]
+        yhat = models.exp_smoothing_multistep(train, 30, cfg_selected)
 
-    # forecast
-    models = ForecastModels()
-    history = data[:-30]
-    yhat = models.exp_smoothing_multistep(train, 30, cfg_selected)
+        yhat = yhat.tolist()
+        ytrue = val.iloc[:, 0].tolist()
+        error_val = measure_rmspe(yhat, ytrue)
+        avg_yhat = np.mean(yhat)
 
-    yhat = yhat.tolist()
-    ytrue = val.iloc[:, 0].tolist()
-    error_val = measure_rmspe(yhat, ytrue)
+        results = [ts_name, ts_currency, last_date, last_observation, cfg_selected, error_val, avg_yhat, yhat]
 
-    results = [ts_name, ts_currency, cfg_selected, error_test, error_val]
-
-    # convert to str
-    results = [str(item) for item in results]
-    #save tuple list to txt file
-    f = open('hw_param_retail.txt', 'a+')
-    # a for append
-    line = ', '.join(x for x in results)
-    f.write(line + '\n')
-    f.close()
+        # convert to str
+        results = [str(item) for item in results]
+        #save tuple list to txt file
+        f = open('hw_param_retail_59.txt', 'a+')
+        # a for append
+        line = ', '.join(x for x in results)
+        f.write(line + '\n')
+        f.close()
+    except:
+        print(f"{MARKET}, {PRODUCT}, {SOURCE} behave abnormally during grid search. Further investigation needed. ")    
 print(f"elapsed time is {elapsed_time} sec.")

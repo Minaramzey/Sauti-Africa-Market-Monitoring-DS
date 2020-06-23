@@ -10,3 +10,4 @@ retail, product: Rice, market: Goma : DRC, source: 1, KES, ['add', False, None, 
 retail, product: Mbeya Rice, market: Arusha : TZA, source: 1, KES, ['add', True, 'add', 6, False, False], 6.24, 7.72
 retail, product: Cowpea, market: Gulu : UGA, source: 1, KES, [None, False, 'add', 12, True, False], 6.18, 6.85
 retail, product: Mixed Beans, market: Bukavu : DRC, source: 1, KES, ['mul', True, 'add', 12, True, False], 4.1, 6.58
+______________________________________________________
