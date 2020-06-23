@@ -3,7 +3,8 @@ notebooks/
 data/
 venv/
 templates/
-
+# AWS EC2 Key pair
+*.pem
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
