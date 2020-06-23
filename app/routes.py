@@ -807,7 +807,7 @@ def query_retail_data():
 
         if stats:
 
-            stats_dict = {'product_category':product_category,'price_category' : 'retail','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': mean_price_value, 'min_price_date': min_price_date, 'min_price': min_price_value, 'max_price_date': max_price_date, 'max_price': max_price_value, 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
+            stats_dict = {'product_category':product_category,'price_category' : 'Retail','start_date' : datetime.date.strftime(stats[0][5],"%Y-%m-%d"), 'end_date': datetime.date.strftime(stats[0][6],"%Y-%m-%d"), 'Mode_D': stats[0][12], 'number_of_observations': stats[0][13], 'mean': mean_price_value, 'min_price_date': min_price_date, 'min_price': min_price_value, 'max_price_date': max_price_date, 'max_price': max_price_value, 'days_between_start_end': stats[0][21], 'completeness': str(round(stats[0][22]*100 / .7123,2)) + ' %', 'DQI': 'not available', 'DQI_cat': 'not available'}
 
             labs_curs.execute('''
             SELECT *
@@ -821,7 +821,7 @@ def query_retail_data():
             if DQI_info:
 
                 stats_dict['DQI'] =  round(DQI_info[0][-2],2)
-                stats_dict['DQI_cat'] =  DQI_info[0][-1]
+                stats_dict['DQI_cat'] =  DQI_info[0][-1].capitalize()
 
         else:
 
@@ -1049,7 +1049,7 @@ def query_wholesale_data():
             if DQI_info:
 
                 stats_dict['DQI'] =  round(DQI_info[0][-2],2)
-                stats_dict['DQI_cat'] =  DQI_info[0][-1]
+                stats_dict['DQI_cat'] =  DQI_info[0][-1].capitalize()
 
         else:
 
@@ -1066,8 +1066,8 @@ def query_wholesale_data():
         labs_conn.close()
     
 
-@app.route("/availablepairs/")
-def get_available_pairs():
+@app.route("/availablepairsobjects/")
+def get_available_pairs_objects():
 
     labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
                 password=os.environ.get('aws_db_password'),
@@ -1177,4 +1177,126 @@ def get_available_pairs():
 
 
     return jsonify(all_pairs)
+
+
+@app.route("/availablepairs/")
+def get_available_pairs():
+
+    labs_conn = psycopg2.connect(user=os.environ.get('aws_db_user'),
+                password=os.environ.get('aws_db_password'),
+                host=os.environ.get('aws_db_host'),
+                port=os.environ.get('aws_db_port'),
+                database=os.environ.get('aws_db_name'))
+    
+    labs_curs = labs_conn.cursor()
+
+    all_pairs = [{'retail':None, 'wholesale':None}]
+
+    labs_curs.execute('''
+            SELECT country_code
+            FROM countries
+            ''')
+
+    countries = labs_curs.fetchall()
+
+    if countries:
+
+        countries = [x[0] for x in countries]
+
+        country_market_product_pairs = {country: None for country in countries}
+
+        for country in countries:
+
+
+            labs_curs.execute('''
+                    SELECT market_name 
+                    FROM markets
+                    WHERE country_code = %s
+                    ''', (country,))
+
+            markets = labs_curs.fetchall()
+
+            if markets:
+
+                markets = [x[0] for x in markets]
+
+                country_market_product_pairs[country]= [{market : None for market in markets}]
+
+                retail_pairs = country_market_product_pairs.copy()
+                wholesale_pairs = country_market_product_pairs.copy()
+
+                for market in markets:
+
+                    # retail query
+
+                    labs_curs.execute('''
+                    SELECT DISTINCT(product_name) 
+                    FROM retail_prices
+                    WHERE country_code = %s
+                    AND market_name = %s
+                    ''', (country,market))
+
+                    products = labs_curs.fetchall()
+
+                    if products:
+
+                        products = [x[0] for x in products]
+
+                        retail_pairs[country][0][market] = products
+                        all_pairs[0]['retail'] = [retail_pairs]
+
+
+
+                    # wholesale query
+
+                    labs_curs.execute('''
+                    SELECT DISTINCT(product_name) 
+                    FROM wholesale_prices
+                    WHERE country_code = %s
+                    AND market_name = %s
+                    ''', (country,market))
+
+                    products = labs_curs.fetchall()
+
+                    if products:
+
+                        products = [x[0] for x in products]
+
+                        wholesale_pairs[country][0][market] = products
+                        all_pairs[0]['wholesale'] = [wholesale_pairs]
+
+                    else:
+
+                        del wholesale_pairs[country][0][market]
+   
+    labs_curs.close()
+    labs_conn.close()
+
+    keys_to_drop = []
+
+    for sale_type in ['retail', 'wholesale']:
+
+        for key in all_pairs[0][sale_type][0].keys():
+
+            if not all_pairs[0][sale_type][0][key]:
+
+                keys_to_drop.append(key)
+        
+        for key in keys_to_drop:
+
+            del all_pairs[0][sale_type][0][key]
+        
+        keys_to_drop = []
+
+
+
+
+
+
+
+
+    return jsonify(all_pairs)
+
+
+
 
