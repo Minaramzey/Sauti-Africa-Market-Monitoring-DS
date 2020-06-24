@@ -3,6 +3,9 @@ test grid search on one time series
 v2 use aws analytical db instead of stakeholder db"""
 import context
 import pandas as pd
+from skopt import BayesSearchCV
+# parameter ranges are specified by one of below
+from skopt.space import Real, Categorical, Integer
 # import matplotlib.pyplot as plt
 # from statsmodels.tsa.holtwinters import ExponentialSmoothing
 import time
@@ -47,7 +50,55 @@ mc = ModelConfig()
 # config list for one time series
 cfg_list = mc.exp_smoothing_configs(seasonal=[12, 365])
 print(f'total of {len(cfg_list)} configuations.')
-N=1 # example converge case
+
+# Try randomsearch 
+pipeline = make_pipeline(
+    
+    
+    ,
+    Ridge()
+)
+
+param_distributions = {
+    'simpleimputer__strategy': ['mean', 'median'],
+    'selectkbest__k': range(1, len(X_train.columns)+1),
+    'ridge__alpha': [0.1, 1, 10],
+}
+
+# If you're on Colab, decrease n_iter & cv parameters
+search = RandomizedSearchCV(
+    pipeline,
+    param_distributions=param_distributions,
+    n_iter=100,  # number of combinations of hyperparameters
+    cv=5,
+    scoring='neg_mean_absolute_error',
+    verbose=10,
+    return_train_score=True,
+    n_jobs=-1
+)
+
+search.fit(X_train, y_train)
+
+
+# #Try BayesSearch
+# opt = BayesSearchCV(
+#     model(),
+#     {
+#         't': Categorical(['add', 'mul', None]),
+#         'd': Categorical([True, False]),
+#         's': Categorical(['add', 'mul', None]),
+#         'p': Integer(1, 12)
+#         'b': Categorical([True, False]),
+#         'r': Categorical([True, False]),
+#     },
+#     n_iter = 32,
+#     random_state = 42
+# )
+
+# _ = opt.fit(X_train, y_train)
+# print(opt.score(X_test, y_test))
+
+#N=1 # example converge case
 #N=80 # example non-converge case
 #N=97 # example of another non-converge case
 
