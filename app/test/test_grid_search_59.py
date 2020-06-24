@@ -95,4 +95,4 @@ for tsi in ts_list:
         f.close()
     except:
         print(f"{MARKET}, {PRODUCT}, {SOURCE} behaved abnormally during grid search. Further investigation needed. ")    
-print(f"Total elapsed time is {elapsed_time} sec for {len(ts_list)} sequences.")
+print(f"Total elapsed time is {elapsed_time} sec for {len}.")
