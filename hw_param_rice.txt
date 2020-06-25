@@ -1,3 +1,0 @@
-retail, product: Morogoro Rice, market: Dar Es Salaam : TZA, source: 1, KES, ['mul', False, None, 365, True, False], 0.58
-retail, product: Morogoro Rice, market: Dar Es Salaam : TZA, source: 1, KES, ['add', True, 'add', 12, False, True], 5.4, 1.17
-retail, product: Morogoro Rice, market: Dar Es Salaam : TZA, source: 1, KES, ['add', True, 'add', 12, False, False], 5.4, 1.15

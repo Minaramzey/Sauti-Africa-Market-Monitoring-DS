@@ -49,7 +49,7 @@ Pros:
    
 Cons: 
 * User needs to be familiar with python and database basics.
-* Time consuming. The grid search method desires large computational power. To get a better idea of computational intensity for the grid search method, we tested one time sequence: Dar Es Salaam Morogoro Rice, which has a total length of 1760 days after interpolation. On a stand-alone machine (2.6 GHz processor, 8 GB RAM), it took 108.73 min to finish grid searching of 144 configurations; while on a virtual machine with 64 GB RAM and 16 GPU cores (an AWS EC2 instance type m5ad.4xlarge), it took 17.38 min to complete the same task. 
+* Time consuming. The grid search method desires large computational power. To get a better idea of computational intensity for the grid search method, we tested one time sequence: Dar Es Salaam Morogoro Rice, which has a total length of 1760 days after interpolation. On a stand-alone machine (2.6 GHz processor, 8 GB RAM), it took 108.73 min to finish grid searching of 144 configurations; while on a virtual machine with 64 GB RAM and 16 GPU cores (an AWS EC2 instance type m5ad.4xlarge), it took 17.38 min to complete the same task. For 65 sequences, it took 11.38 hours on the stand-alone machine, and 3.06 hours using the AWS EC2 virtual machine.
    
 ## Future work:
 1. Use DQI metric Mode_D to define resolution for each time series, instead of use universal day-by-day time frame. This customized forecast resolution feature could reduce uncertainty due to interpolation and improve model accuracy. 
