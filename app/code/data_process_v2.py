@@ -108,7 +108,6 @@ class DataQualityCheck:
         y_t = time_df.merge(y, how='left', left_index=True, right_index=True)
         return y_t
 
-    
 
 class TimeSeries():
     """genereate one time series data (cleaned) for analysis"""

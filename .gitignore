@@ -1,5 +1,11 @@
 # customized
-#.env 
+.env
+forecast.pem
+main.pymake.bat
+Makefile 
+source/
+code-docs/
+py3-sphinx/
 notebooks/
 data/
 venv/
