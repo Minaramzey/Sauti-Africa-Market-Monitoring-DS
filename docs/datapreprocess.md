@@ -9,14 +9,14 @@ The DQI is defined as the weighted sum of the six transformed quality dimensions
 $$DQI = \sum_{i=1}^6D_iW_i$$
 
 where  
-```
+
     D1, W1 = tdf['data_length'], 0.6
     D2, W2 = tdf['completeness'], 0.3
     D3, W3 = 1-tdf['mode_D'], 0.9
     D4, W4 = 1-tdf['timeliness'], 0.9
     D5, W5 = 1-tdf['duplicates'], 0.3
     D6, W6 = tdf['data_points'], 0.9
-```
+
 tdf means the transformed dimensions are transformed (scaled to be in the range of 0 to 1). Weights assigned to the quality dimensions are empirical. 
 
 The following quality index are used extracted from each time series and used in the calculation of six quality dimentions. 

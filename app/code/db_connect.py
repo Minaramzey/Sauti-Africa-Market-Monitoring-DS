@@ -41,6 +41,10 @@ class dbConnect:
         engine = create_engine(db_URI)
         
         df.to_sql(tablename, con=engine, if_exists='replace', index=False, chunksize=100)
+
+    def connect_analytical_db(self):
+        connection = psycopg2.connect(user=aws_db_user, password=aws_db_password, host=aws_db_host, port=aws_db_port, database=aws_db_name)        
+        return connection
        
     def migrate_analyticalDB(self):
         """read/add newly added data only"""
