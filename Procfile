@@ -1,1 +1,0 @@
-web: gunicorn wsgi:DS-API/app
