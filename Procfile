@@ -1,1 +1,1 @@
-web: gunicorn wsgi: DS-API/app --log-file -
+web: gunicorn wsgi: DS-API/app 
