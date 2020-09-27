@@ -1,1 +1,1 @@
-web: gunicorn app:DS-API/app
+web: gunicorn wisg:DS-API/app
