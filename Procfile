@@ -1,1 +1,1 @@
-web: gunicorn wsgi: DS-API
+web: gunicorn run: app
