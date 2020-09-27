@@ -1,1 +1,1 @@
-echo "web: python DS-API.wsgi" > Procfile
+web: gunicorn wsgi:DS-API/app
