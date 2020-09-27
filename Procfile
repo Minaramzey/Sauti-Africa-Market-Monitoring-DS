@@ -1,1 +1,1 @@
-web: gunicorn DS-API.wsgi
+echo "web: gunicorn DS-API.wsgi" > Procfile
