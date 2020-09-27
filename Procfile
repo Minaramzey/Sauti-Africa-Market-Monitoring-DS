@@ -1,1 +1,1 @@
-web: gunicorn DS-API/app.wsig
+web: gunicorn wsig:DS-API/app
